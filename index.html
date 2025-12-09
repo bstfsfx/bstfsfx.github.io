@@ -9,11 +9,12 @@
         html, body {
             height: 100%;
             margin: 0;
-            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23abd5, #23a6d5);
+            overflow: hidden;
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
             background-size: 400% 400%;
             animation: gradient 15s ease infinite;
             color: #fff;
-            font-family: sans-serif;
+            font-family: 'Arial', sans-serif;
             text-align: center;
         }
 
@@ -27,84 +28,183 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            height: 100vh;
+            gap: 30px;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        #main-section {
+            display: flex;
             flex-direction: column;
-            height: 100%;
+            align-items: center;
+            gap: 15px;
+        }
+
+        #sidebar {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            min-width: 140px;
+        }
+
+        #score {
+            font-size: 28px;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        #highscores {
+            font-size: 18px;
+            text-align: left;
+            background: rgba(0,0,0,0.3);
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.3);
+            max-height: 200px;
+            overflow-y: auto;
         }
 
         canvas {
-            border: 1px solid white;
-            background: black;
-        }
-
-        #next {
-            border: 1px solid white;
-            background: black;
-            margin: 10px;
-        }
-
-        #score, #highscores {
-            font-size: 24px;
-            margin: 10px;
+            border: 3px solid #fff;
+            background: #111;
+            box-shadow: 0 0 20px rgba(255,255,255,0.3);
+            image-rendering: pixelated;
+            image-rendering: -webkit-optimize-contrast;
+            image-rendering: crisp-edges;
+            image-rendering: -moz-crisp-edges;
         }
 
         #controls {
             display: flex;
+            flex-wrap: wrap;
             justify-content: center;
-            margin: 10px;
+            gap: 10px;
+            max-width: 140px;
         }
 
         button {
-            font-size: 24px;
-            margin: 5px;
-            padding: 10px;
-            background: transparent;
+            background: rgba(255,255,255,0.1);
             color: white;
-            border: 1px solid white;
+            border: 2px solid rgba(255,255,255,0.5);
+            border-radius: 10px;
             cursor: pointer;
+            transition: all 0.2s;
+            font-size: 20px;
+            padding: 12px;
+            min-width: 55px;
+            min-height: 55px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        @media (max-width: 600px) {
-            canvas {
+        button:hover, button:active {
+            background: rgba(255,255,255,0.3);
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(255,255,255,0.5);
+        }
+
+        #music-toggle {
+            font-size: 24px;
+            padding: 15px;
+        }
+
+        #restart {
+            display: none;
+            background: linear-gradient(45deg, #ff6b6b, #ffd93d);
+            color: #000;
+            font-weight: bold;
+            font-size: 22px;
+            padding: 15px 40px;
+            border: none;
+            border-radius: 25px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        #restart:hover {
+            transform: scale(1.1);
+            box-shadow: 0 5px 20px rgba(255,107,107,0.6);
+        }
+
+        @media (max-width: 700px) {
+            #game-container {
+                flex-direction: column;
+                align-items: center;
+                gap: 20px;
+                padding: 10px;
+            }
+
+            #game {
+                width: 280px;
+                height: 560px;
+            }
+
+            #next {
+                width: 120px;
+                height: 120px;
+            }
+
+            #controls button {
+                min-width: 50px;
+                min-height: 50px;
+                font-size: 18px;
+                padding: 10px;
+            }
+
+            #score {
+                font-size: 24px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            #game {
                 width: 240px;
                 height: 480px;
             }
 
             #next {
-                width: 80px;
-                height: 80px;
+                width: 100px;
+                height: 100px;
             }
         }
     </style>
 </head>
 <body>
     <div id="game-container">
-        <div id="score">Score: 0</div>
-        <canvas width="320" height="640" id="game"></canvas>
-        <canvas width="160" height="160" id="next"></canvas>
-        <div id="highscores"></div>
-        <button id="music-toggle"><i class="fas fa-music"></i></button>
-        <audio id="bgmusic" loop>
-            <!-- Provide your own tetris.mp3 file -->
-            <source src="tetris.mp3" type="audio/mpeg">
-        </audio>
-        <div id="controls">
-            <button id="left"><i class="fas fa-arrow-left"></i></button>
-            <button id="right"><i class="fas fa-arrow-right"></i></button>
-            <button id="down"><i class="fas fa-arrow-down"></i></button>
-            <button id="rotate"><i class="fas fa-sync-alt"></i></button>
+        <div id="main-section">
+            <div id="score">Score: 0 | Level: 1 | Lines: 0</div>
+            <canvas width="320" height="640" id="game"></canvas>
+            <button id="restart">🔄 Restart</button>
+        </div>
+        <div id="sidebar">
+            <canvas width="160" height="160" id="next"></canvas>
+            <button id="music-toggle"><i class="fas fa-music-slash"></i></button>
+            <div id="controls">
+                <button id="left"><i class="fas fa-arrow-left"></i></button>
+                <button id="right"><i class="fas fa-arrow-right"></i></button>
+                <button id="rotate"><i class="fas fa-sync-alt"></i></button>
+                <button id="softdrop"><i class="fas fa-arrow-down"></i></button>
+                <button id="harddrop"><i class="fas fa-angle-double-down"></i></button>
+            </div>
+            <div id="highscores"></div>
         </div>
     </div>
+    <audio id="bgmusic" loop preload="auto">
+        <!-- Add your tetris.mp3 here -->
+        <source src="tetris.mp3" type="audio/mpeg">
+    </audio>
     <script>
-        // Based on basic Tetris, enhanced with features
+        // Tetris Game with enhanced features
 
-        // get a random integer
         function getRandomInt(min, max) {
             min = Math.ceil(min);
             max = Math.floor(max);
             return Math.floor(Math.random() * (max - min + 1)) + min;
         }
 
-        // generate sequence
         const tetrominoSequence = [];
         function generateSequence() {
             const sequence = ['I', 'J', 'L', 'O', 'S', 'T', 'Z'];
@@ -115,7 +215,6 @@
             }
         }
 
-        // get next tetromino
         const tetrominos = {
             'I': [
                 [0, 0, 0, 0],
@@ -126,42 +225,42 @@
             'J': [
                 [1, 0, 0],
                 [1, 1, 1],
-                [0, 0, 0],
+                [0, 0, 0]
             ],
             'L': [
                 [0, 0, 1],
                 [1, 1, 1],
-                [0, 0, 0],
+                [0, 0, 0]
             ],
             'O': [
                 [1, 1],
-                [1, 1],
+                [1, 1]
             ],
             'S': [
                 [0, 1, 1],
                 [1, 1, 0],
-                [0, 0, 0],
+                [0, 0, 0]
             ],
             'Z': [
                 [1, 1, 0],
                 [0, 1, 1],
-                [0, 0, 0],
+                [0, 0, 0]
             ],
             'T': [
                 [0, 1, 0],
                 [1, 1, 1],
-                [0, 0, 0],
+                [0, 0, 0]
             ]
         };
 
         const colors = {
-            'I': 'cyan',
-            'O': 'yellow',
-            'T': 'purple',
-            'S': 'green',
-            'Z': 'red',
-            'J': 'blue',
-            'L': 'orange'
+            'I': '#00FFFF',
+            'O': '#FFFF00',
+            'T': '#AA00FF',
+            'S': '#00FF00',
+            'Z': '#FF0000',
+            'J': '#0000FF',
+            'L': '#FFAA00'
         };
 
         function getNextTetromino() {
@@ -180,7 +279,6 @@
             };
         }
 
-        // rotate matrix
         function rotate(matrix) {
             const N = matrix.length - 1;
             const result = matrix.map((row, i) =>
@@ -189,7 +287,6 @@
             return result;
         }
 
-        // valid move
         function isValidMove(matrix, cellRow, cellCol) {
             for (let row = 0; row < matrix.length; row++) {
                 for (let col = 0; col < matrix[row].length; col++) {
@@ -197,7 +294,7 @@
                         cellCol + col < 0 ||
                         cellCol + col >= playfield[0].length ||
                         cellRow + row >= playfield.length ||
-                        playfield[cellRow + row][cellCol + col]
+                        (cellRow + row >= 0 && playfield[cellRow + row][cellCol + col])
                     )) {
                         return false;
                     }
@@ -206,20 +303,20 @@
             return true;
         }
 
-        // place tetromino
         function placeTetromino() {
             for (let row = 0; row < tetromino.matrix.length; row++) {
                 for (let col = 0; col < tetromino.matrix[row].length; col++) {
                     if (tetromino.matrix[row][col]) {
-                        if (tetromino.row + row < 0) {
+                        const pRow = tetromino.row + row;
+                        if (pRow < 0) {
                             showGameOver();
+                            return;
                         }
-                        playfield[tetromino.row + row][tetromino.col + col] = tetromino.name;
+                        playfield[pRow][tetromino.col + col] = tetromino.name;
                     }
                 }
             }
 
-            // clear lines
             let linesCleared = 0;
             for (let row = playfield.length - 1; row >= 0; ) {
                 if (playfield[row].every(cell => !!cell)) {
@@ -234,7 +331,6 @@
                 }
             }
 
-            // update score
             if (linesCleared > 0) {
                 score += [0, 40, 100, 300, 1200][linesCleared] * level;
                 lines += linesCleared;
@@ -252,29 +348,51 @@
             cancelAnimationFrame(rAF);
             gameOver = true;
 
-            context.fillStyle = 'black';
-            context.globalAlpha = 0.75;
-            context.fillRect(0, canvas.height / 2 - 30, canvas.width, 60);
+            const context = canvas.getContext('2d');
+            context.fillStyle = 'rgba(0,0,0,0.8)';
+            context.fillRect(0, canvas.height / 2 - 60, canvas.width, 120);
 
-            context.globalAlpha = 1;
-            context.fillStyle = 'white';
-            context.font = '36px monospace';
+            context.fillStyle = '#FFD700';
+            context.font = 'bold 40px monospace';
             context.textAlign = 'center';
             context.textBaseline = 'middle';
             context.fillText('GAME OVER!', canvas.width / 2, canvas.height / 2);
 
-            // update high scores
+            context.fillStyle = '#fff';
+            context.font = '28px monospace';
+            context.fillText(`Final Score: ${score}`, canvas.width / 2, canvas.height / 2 + 40);
+
+            // Update high scores
             let highScores = JSON.parse(localStorage.getItem('highScores') || '[]');
             highScores.push(score);
             highScores.sort((a, b) => b - a);
             highScores = highScores.slice(0, 10);
             localStorage.setItem('highScores', JSON.stringify(highScores));
 
-            // display top 10
             const highscoresDiv = document.getElementById('highscores');
-            highscoresDiv.innerHTML = 'Top 10 Scores:<br>' + highScores.map(s => s).join('<br>');
+            highscoresDiv.innerHTML = '🏆 Top 10:<br>' + highScores.map((s, i) => `${i + 1}. ${s}`).join('<br>');
+
+            document.getElementById('restart').style.display = 'block';
         }
 
+        function restartGame() {
+            for (let row = -2; row < 20; row++) {
+                playfield[row] = new Array(10).fill(0);
+            }
+            score = 0;
+            lines = 0;
+            level = 1;
+            dropInterval = 35;
+            count = 0;
+            gameOver = false;
+            tetromino = getNextTetromino();
+            nextTetromino = getNextTetromino();
+            document.getElementById('restart').style.display = 'none';
+            document.getElementById('score').innerText = 'Score: 0 | Level: 1 | Lines: 0';
+            rAF = requestAnimationFrame(loop);
+        }
+
+        // Canvas setup
         const canvas = document.getElementById('game');
         const context = canvas.getContext('2d');
         const nextCanvas = document.getElementById('next');
@@ -282,10 +400,7 @@
         const grid = 32;
         const playfield = [];
         for (let row = -2; row < 20; row++) {
-            playfield[row] = [];
-            for (let col = 0; col < 10; col++) {
-                playfield[row][col] = 0;
-            }
+            playfield[row] = new Array(10).fill(0);
         }
 
         let tetromino = getNextTetromino();
@@ -296,34 +411,28 @@
         let score = 0;
         let lines = 0;
         let level = 1;
-        let dropInterval = 35; // frames per drop
+        let dropInterval = 35;
 
-        // draw 3D block
         function draw3DBlock(x, y, color) {
             context.fillStyle = color;
             context.fillRect(x, y, grid - 1, grid - 1);
 
-            // 3D effect: light and dark borders
-            context.fillStyle = 'rgba(255,255,255,0.3)'; // light top-left
-            context.beginPath();
-            context.moveTo(x, y);
-            context.lineTo(x + grid - 1, y);
-            context.lineTo(x, y + grid - 1);
-            context.fill();
+            // 3D highlight
+            context.fillStyle = 'rgba(255,255,255,0.4)';
+            context.fillRect(x, y, grid - 1, 3);
+            context.fillRect(x, y, 3, grid - 1);
 
-            context.fillStyle = 'rgba(0,0,0,0.3)'; // dark bottom-right
-            context.beginPath();
-            context.moveTo(x + grid - 1, y + grid - 1);
-            context.lineTo(x + grid - 1, y);
-            context.lineTo(x, y + grid - 1);
-            context.fill();
+            // 3D shadow
+            context.fillStyle = 'rgba(0,0,0,0.4)';
+            context.fillRect(x + grid - 3, y, 3, grid - 1);
+            context.fillRect(x, y + grid - 3, grid - 1, 3);
         }
 
         function loop() {
             rAF = requestAnimationFrame(loop);
             context.clearRect(0, 0, canvas.width, canvas.height);
 
-            // draw playfield
+            // Draw playfield
             for (let row = 0; row < 20; row++) {
                 for (let col = 0; col < 10; col++) {
                     if (playfield[row][col]) {
@@ -333,7 +442,7 @@
                 }
             }
 
-            // draw tetromino
+            // Auto drop
             if (tetromino) {
                 if (++count > dropInterval) {
                     tetromino.row++;
@@ -344,6 +453,7 @@
                     }
                 }
 
+                // Draw current tetromino
                 for (let row = 0; row < tetromino.matrix.length; row++) {
                     for (let col = 0; col < tetromino.matrix[row].length; col++) {
                         if (tetromino.matrix[row][col]) {
@@ -353,69 +463,129 @@
                 }
             }
 
-            // update score
             document.getElementById('score').innerText = `Score: ${score} | Level: ${level} | Lines: ${lines}`;
 
-            // draw next
+            // Draw next tetromino
             nextContext.clearRect(0, 0, nextCanvas.width, nextCanvas.height);
             const nextGrid = 40;
+            const offsetX = (160 - nextTetromino.matrix[0].length * nextGrid) / 2;
+            const offsetY = (160 - nextTetromino.matrix.length * nextGrid) / 2;
             for (let row = 0; row < nextTetromino.matrix.length; row++) {
                 for (let col = 0; col < nextTetromino.matrix[row].length; col++) {
                     if (nextTetromino.matrix[row][col]) {
                         nextContext.fillStyle = colors[nextTetromino.name];
-                        nextContext.fillRect(col * nextGrid, row * nextGrid, nextGrid-1, nextGrid-1);
+                        nextContext.fillRect(offsetX + col * nextGrid, offsetY + row * nextGrid, nextGrid - 1, nextGrid - 1);
+
+                        // Simple 3D for next
+                        nextContext.fillStyle = 'rgba(255,255,255,0.4)';
+                        nextContext.fillRect(offsetX + col * nextGrid, offsetY + row * nextGrid, 2, nextGrid - 1);
+                        nextContext.fillRect(offsetX + col * nextGrid, offsetY + row * nextGrid, nextGrid - 1, 2);
                     }
                 }
             }
         }
 
-        // keyboard
+        // Movement functions
+        function moveLeft() {
+            if (gameOver || !tetromino) return;
+            const col = tetromino.col - 1;
+            if (isValidMove(tetromino.matrix, tetromino.row, col)) tetromino.col = col;
+        }
+
+        function moveRight() {
+            if (gameOver || !tetromino) return;
+            const col = tetromino.col + 1;
+            if (isValidMove(tetromino.matrix, tetromino.row, col)) tetromino.col = col;
+        }
+
+        function rotateCW() {
+            if (gameOver || !tetromino) return;
+            const matrix = rotate(tetromino.matrix);
+            if (isValidMove(matrix, tetromino.row, tetromino.col)) tetromino.matrix = matrix;
+        }
+
+        function softDrop() {
+            if (gameOver || !tetromino) return;
+            const row = tetromino.row + 1;
+            if (isValidMove(tetromino.matrix, row, tetromino.col)) {
+                tetromino.row = row;
+                score += 1;
+            }
+        }
+
+        function hardDrop() {
+            if (gameOver || !tetromino) return;
+            let dropCount = 0;
+            while (isValidMove(tetromino.matrix, tetromino.row + 1, tetromino.col)) {
+                tetromino.row++;
+                dropCount++;
+            }
+            if (dropCount > 0) {
+                score += 2 * dropCount;
+            }
+            placeTetromino();
+        }
+
+        // Keyboard controls
         document.addEventListener('keydown', (e) => {
             if (gameOver) return;
             if (e.key === 'ArrowLeft') {
-                const col = tetromino.col - 1;
-                if (isValidMove(tetromino.matrix, tetromino.row, col)) tetromino.col = col;
+                e.preventDefault();
+                moveLeft();
             } else if (e.key === 'ArrowRight') {
-                const col = tetromino.col + 1;
-                if (isValidMove(tetromino.matrix, tetromino.row, col)) tetromino.col = col;
+                e.preventDefault();
+                moveRight();
             } else if (e.key === 'ArrowDown') {
-                const row = tetromino.row + 1;
-                if (isValidMove(tetromino.matrix, row, tetromino.col)) tetromino.row = row;
+                e.preventDefault();
+                softDrop();
             } else if (e.key === 'ArrowUp') {
-                const matrix = rotate(tetromino.matrix);
-                if (isValidMove(matrix, tetromino.row, tetromino.col)) tetromino.matrix = matrix;
+                e.preventDefault();
+                rotateCW();
+            } else if (e.code === 'Space') {
+                e.preventDefault();
+                hardDrop();
             }
         });
 
-        // touch buttons
-        document.getElementById('left').addEventListener('touchstart', () => {
-            const col = tetromino.col - 1;
-            if (isValidMove(tetromino.matrix, tetromino.row, col)) tetromino.col = col;
-        });
-        document.getElementById('right').addEventListener('touchstart', () => {
-            const col = tetromino.col + 1;
-            if (isValidMove(tetromino.matrix, tetromino.row, col)) tetromino.col = col;
-        });
-        document.getElementById('down').addEventListener('touchstart', () => {
-            const row = tetromino.row + 1;
-            if (isValidMove(tetromino.matrix, row, tetromino.col)) tetromino.row = row;
-        });
-        document.getElementById('rotate').addEventListener('touchstart', () => {
-            const matrix = rotate(tetromino.matrix);
-            if (isValidMove(matrix, tetromino.row, tetromino.col)) tetromino.matrix = matrix;
-        });
+        // Button controls
+        document.getElementById('left').addEventListener('click', moveLeft);
+        document.getElementById('left').addEventListener('touchstart', (e) => { e.preventDefault(); moveLeft(); });
 
-        // music toggle
+        document.getElementById('right').addEventListener('click', moveRight);
+        document.getElementById('right').addEventListener('touchstart', (e) => { e.preventDefault(); moveRight(); });
+
+        document.getElementById('rotate').addEventListener('click', rotateCW);
+        document.getElementById('rotate').addEventListener('touchstart', (e) => { e.preventDefault(); rotateCW(); });
+
+        document.getElementById('softdrop').addEventListener('click', softDrop);
+        document.getElementById('softdrop').addEventListener('touchstart', (e) => { e.preventDefault(); softDrop(); });
+
+        document.getElementById('harddrop').addEventListener('click', hardDrop);
+        document.getElementById('harddrop').addEventListener('touchstart', (e) => { e.preventDefault(); hardDrop(); });
+
+        document.getElementById('restart').addEventListener('click', restartGame);
+
+        // Music toggle
         const music = document.getElementById('bgmusic');
-        document.getElementById('music-toggle').addEventListener('click', () => {
+        const musicIcon = document.querySelector('#music-toggle i');
+        function toggleMusic() {
             if (music.paused) {
-                music.play();
+                music.play().catch(() => {});
+                musicIcon.className = 'fas fa-music';
             } else {
                 music.pause();
+                musicIcon.className = 'fas fa-music-slash';
             }
-        });
+        }
+        document.getElementById('music-toggle').addEventListener('click', toggleMusic);
 
-        // start game
+        // Init high scores display
+        let highScoresInit = JSON.parse(localStorage.getItem('highScores') || '[]');
+        highScoresInit.sort((a, b) => b - a);
+        document.getElementById('highscores').innerHTML = highScoresInit.length ?
+            '🏆 Top 10:<br>' + highScoresInit.slice(0, 10).map((s, i) => `${i + 1}. ${s}`).join('<br>') : '';
+
+        // Start game
         rAF = requestAnimationFrame(loop);
     </script>
 </body>
